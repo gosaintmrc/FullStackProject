@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gosaint.dao.inventoryManagement.WarehousesDao">
+    
+    <insert id="insert" parameterType="Warehouses">
+        INSERT INTO warehouses (
+            warehouse_id,
+            warehouse_name,
+            address,
+            created_at
+        ) VALUES (
+            #{warehouseId},
+            #{warehouseName},
+            #{address},
+            #{createdAt}
+        )
+    </insert>
+    
+    <select id="selectById" parameterType="string" resultType="Warehouses">
+        SELECT 
+            warehouse_id AS warehouseId,
+            warehouse_name AS warehouseName,
+            address,
+            created_at AS createdAt
+        FROM warehouses
+        WHERE warehouse_id = #{warehouseId}
+    </select>
+    
+    <select id="selectAll" resultType="Warehouses">
+        SELECT 
+            warehouse_id AS warehouseId,
+            warehouse_name AS warehouseName,
+            address,
+            created_at AS createdAt
+        FROM warehouses
+    </select>
+    
+    <update id="update" parameterType="Warehouses">
+        UPDATE warehouses
+        SET 
+            warehouse_name = #{warehouseName},
+            address = #{address}
+        WHERE warehouse_id = #{warehouseId}
+    </update>
+    
+    <delete id="delete" parameterType="string">
+        DELETE FROM warehouses
+        WHERE warehouse_id = #{warehouseId}
+    </delete>
+</mapper>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gosaint.dao.inventoryManagement.ProductsDao">
+    
+    <insert id="insert" parameterType="com.gosaint.model.inventoryManagement.Products">
+        INSERT INTO products (
+            product_id,
+            product_name,
+            sku,
+            brand,
+            category,
+            supplier,
+            created_at
+        ) VALUES (
+            #{productId},
+            #{productName},
+            #{sku},
+            #{brand},
+            #{category},
+            #{supplier},
+            #{createdAt}
+        )
+    </insert>
+    
+    <insert id="insertBatch">
+        INSERT INTO products (
+            product_name,
+            sku,
+            brand,
+            category,
+            supplier
+        ) VALUES
+        <foreach collection="products" item="product" separator=",">
+        (
+            #{product.productName},
+            #{product.sku},
+            #{product.brand},
+            #{product.category},
+            #{product.supplier}
+        )
+        </foreach>
+    </insert>
+    
+    <select id="selectById" parameterType="string" resultType="com.gosaint.model.inventoryManagement.Products">
+        SELECT 
+            product_id AS productId,
+            product_name AS productName,
+            sku,
+            brand,
+            category,
+            supplier,
+            created_at AS createdAt
+        FROM products
+        WHERE product_id = #{productId}
+    </select>
+    
+    <select id="selectBySku" parameterType="string" resultType="com.gosaint.model.inventoryManagement.Products">
+        SELECT 
+            product_id AS productId,
+            product_name AS productName,
+            sku,
+            brand,
+            category,
+            supplier,
+            created_at AS createdAt
+        FROM products
+        WHERE sku = #{sku}
+    </select>
+    
+    <select id="selectAll" resultType="com.gosaint.model.inventoryManagement.Products">
+        SELECT 
+            product_id AS productId,
+            product_name AS productName,
+            sku,
+            brand,
+            category,
+            supplier,
+            created_at AS createdAt
+        FROM products order by created_at desc
+    </select>
+
+    <select id="selectAllWithSearch" resultType="com.gosaint.model.vo.ProductsVO">
+        SELECT
+        p.product_id AS productId,
+        product_name AS productName,
+        sku,
+        brand,
+        category,
+        supplier,
+        created_at AS createdAt,
+        CASE
+        WHEN i.product_id IS NOT NULL THEN TRUE
+        ELSE FALSE
+        END AS isIntoInventory
+        FROM products p LEFT JOIN inventory_items i ON p.product_id = i.product_id
+        <where>
+            <if test="search != null and search != ''">
+                product_name LIKE CONCAT('%', #{search, jdbcType=VARCHAR}::text, '%')
+                OR sku LIKE CONCAT('%', #{search, jdbcType=VARCHAR}::text, '%')
+                OR brand LIKE CONCAT('%', #{search, jdbcType=VARCHAR}::text, '%')
+                OR category LIKE CONCAT('%', #{search, jdbcType=VARCHAR}::text, '%')
+                OR supplier LIKE CONCAT('%', #{search, jdbcType=VARCHAR}::text, '%')
+            </if>
+        </where>
+        ORDER BY p.created_at DESC
+    </select>
+    
+    <update id="update" parameterType="com.gosaint.model.inventoryManagement.Products">
+        UPDATE products
+        SET 
+            product_name = #{productName},
+            sku = #{sku},
+            brand = #{brand},
+            category = #{category},
+            supplier = #{supplier}
+        WHERE product_id = #{productId}
+    </update>
+    
+    <delete id="delete" parameterType="string">
+        DELETE FROM products
+        WHERE product_id = #{productId}
+    </delete>
+</mapper>

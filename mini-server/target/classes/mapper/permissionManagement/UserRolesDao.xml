@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gosaint.dao.permissionManagement.UserRolesDao">
+    
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="com.gosaint.model.permissionManagement.UserRoles">
+        <result column="user_id" property="userId"/>
+        <result column="role_id" property="roleId"/>
+    </resultMap>
+
+    <!-- 为用户添加角色 -->
+    <insert id="insert" parameterType="com.gosaint.model.permissionManagement.UserRoles">
+        INSERT INTO user_roles (
+            user_id, 
+            role_id
+        ) VALUES (
+            #{userId}, 
+            #{roleId}
+        )
+    </insert>
+
+    <!-- 根据用户ID查询角色列表 -->
+    <select id="selectRolesByUserId" parameterType="String" resultType="String">
+        SELECT r.role_name
+        FROM user_roles ur
+        JOIN roles r ON ur.role_id = r.role_id
+        WHERE ur.user_id = #{userId}
+    </select>
+
+    <!-- 根据角色ID查询用户列表 -->
+    <select id="selectUsersByRoleId" parameterType="String" resultType="String">
+        SELECT u.user_id
+        FROM user_roles ur
+        JOIN users u ON ur.user_id = u.user_id
+        WHERE ur.role_id = #{roleId}
+    </select>
+
+    <!-- 解除用户-角色关联 -->
+    <delete id="delete">
+        DELETE FROM user_roles WHERE user_id = #{userId} AND role_id = #{roleId}
+    </delete>
+
+    <!-- 解除用户的所有角色关联 -->
+    <delete id="deleteByUserId" parameterType="String">
+        DELETE FROM user_roles WHERE user_id = #{userId}
+    </delete>
+</mapper>

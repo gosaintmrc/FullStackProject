@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gosaint.dao.permissionManagement.RolePermissionsDao">
+    
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="com.gosaint.model.permissionManagement.RolePermissions">
+        <result column="role_id" property="roleId"/>
+        <result column="permission_id" property="permissionId"/>
+    </resultMap>
+
+    <!-- 为角色添加权限 -->
+    <insert id="insert" parameterType="com.gosaint.model.permissionManagement.RolePermissions">
+        INSERT INTO role_permissions (
+            role_id, 
+            permission_id
+        ) VALUES (
+            #{roleId}, 
+            #{permissionId}
+        )
+    </insert>
+
+    <!-- 根据角色ID查询权限列表 -->
+    <select id="selectPermissionsByRoleId" parameterType="String" resultType="String">
+        SELECT p.permission_id
+        FROM role_permissions rp
+        JOIN permissions p ON rp.permission_id = p.permission_id
+        WHERE rp.role_id = #{roleId}
+    </select>
+
+    <!-- 根据权限ID查询角色列表 -->
+    <select id="selectRolesByPermissionId" parameterType="String" resultType="String">
+        SELECT r.role_id
+        FROM role_permissions rp
+        JOIN roles r ON rp.role_id = r.role_id
+        WHERE rp.permission_id = #{permissionId}
+    </select>
+
+    <!-- 解除角色-权限关联 -->
+    <delete id="delete">
+        DELETE FROM role_permissions WHERE role_id = #{roleId} AND permission_id = #{permissionId}
+    </delete>
+
+    <!-- 解除角色的所有权限关联 -->
+    <delete id="deleteByRoleId" parameterType="String">
+        DELETE FROM role_permissions WHERE role_id = #{roleId}
+    </delete>
+</mapper>

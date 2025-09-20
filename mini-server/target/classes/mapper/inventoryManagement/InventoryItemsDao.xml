@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gosaint.dao.inventoryManagement.InventoryItemsDao">
+    
+    <insert id="insert" parameterType="com.gosaint.model.inventoryManagement.InventoryItems">
+        INSERT INTO inventory_items (
+            product_id,
+            batch_number,
+            serial_number,
+            quantity,
+            unit_of_measure,
+            warehouse_id,
+            expiry_date,
+            status,
+            cost_price,
+            is_traceable
+        ) VALUES (
+            #{productId},
+            #{batchNumber},
+            #{serialNumber},
+            #{quantity},
+            #{unitOfMeasure},
+            #{warehouseId},
+            #{expiryDate},
+            #{status},
+            #{costPrice},
+            #{isTraceable}
+        )
+    </insert>
+    
+    <select id="selectById" parameterType="string" resultType="com.gosaint.model.inventoryManagement.InventoryItems">
+        SELECT 
+            item_id AS itemId,
+            product_id AS productId,
+            batch_number AS batchNumber,
+            serial_number AS serialNumber,
+            quantity,
+            unit_of_measure AS unitOfMeasure,
+            warehouse_id AS warehouseId,
+            expiry_date AS expiryDate,
+            entry_date AS entryDate,
+            status,
+            cost_price AS costPrice,
+            is_traceable AS isTraceable
+        FROM inventory_items
+        WHERE item_id = #{itemId}
+    </select>
+    
+    <select id="selectAll" resultType="com.gosaint.model.inventoryManagement.InventoryItems">
+        SELECT 
+            item_id AS itemId,
+            product_id AS productId,
+            batch_number AS batchNumber,
+            serial_number AS serialNumber,
+            quantity,
+            unit_of_measure AS unitOfMeasure,
+            warehouse_id AS warehouseId,
+            expiry_date AS expiryDate,
+            entry_date AS entryDate,
+            status,
+            cost_price AS costPrice,
+            is_traceable AS isTraceable
+        FROM inventory_items
+    </select>
+    
+    <update id="update" parameterType="com.gosaint.model.inventoryManagement.InventoryItems">
+        UPDATE inventory_items
+        SET 
+            product_id = #{productId},
+            batch_number = #{batchNumber},
+            serial_number = #{serialNumber},
+            quantity = #{quantity},
+            unit_of_measure = #{unitOfMeasure},
+            warehouse_id = #{warehouseId},
+            expiry_date = #{expiryDate},
+            entry_date = #{entryDate},
+            status = #{status},
+            cost_price = #{costPrice},
+            is_traceable = #{isTraceable}
+        WHERE item_id = #{itemId}
+    </update>
+    
+    <delete id="delete" parameterType="string">
+        DELETE FROM inventory_items
+        WHERE item_id = #{itemId}
+    </delete>
+    
+    <select id="selectByProductId" parameterType="string" resultType="com.gosaint.model.inventoryManagement.InventoryItems">
+        SELECT 
+            item_id AS itemId,
+            product_id AS productId,
+            batch_number AS batchNumber,
+            serial_number AS serialNumber,
+            quantity,
+            unit_of_measure AS unitOfMeasure,
+            warehouse_id AS warehouseId,
+            expiry_date AS expiryDate,
+            entry_date AS entryDate,
+            status,
+            cost_price AS costPrice,
+            is_traceable AS isTraceable
+        FROM inventory_items
+        WHERE product_id = #{productId}
+    </select>
+
+    <select id="selectByProductIds" parameterType="string" resultType="string">
+        SELECT
+        product_id AS productId
+        <foreach collection="productIdList" item="productId" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </select>
+    
+    <select id="selectByWarehouseId" parameterType="string" resultType="com.gosaint.model.inventoryManagement.InventoryItems">
+        SELECT 
+            item_id AS itemId,
+            product_id AS productId,
+            batch_number AS batchNumber,
+            serial_number AS serialNumber,
+            quantity,
+            unit_of_measure AS unitOfMeasure,
+            warehouse_id AS warehouseId,
+            expiry_date AS expiryDate,
+            entry_date AS entryDate,
+            status,
+            cost_price AS costPrice,
+            is_traceable AS isTraceable
+        FROM inventory_items
+        WHERE warehouse_id = #{warehouseId}
+    </select>
+</mapper>
